@@ -1,0 +1,17 @@
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "useBuiltIns": "usage", // or "entry"
+      "corejs": 3,
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ],
+  "plugins": [
+    ["@babel/plugin-transform-modules-commonjs"],
+    ["@babel/plugin-transform-runtime", {
+      "regenerator": true
+    }]
+  ]
+}

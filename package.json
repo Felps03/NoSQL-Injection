@@ -1,0 +1,80 @@
+{
+  "name": "template-node",
+  "version": "0.0.5",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Felps03, brunass",
+  "scripts": {
+    "start": "node dist/server.js",
+    "test": "jest",
+    "dev": "nodemon src/server.js --ignore __tests__",
+    "lint": "eslint .",
+    "pretty": "npx pretty-quick --staged",
+    "style:check": "npm run pretty && npm run lint:fix",
+    "lint:fix": "npx eslint . --fix",
+    "build": "rimraf dist && babel src -s -D -d dist --presets @babel/preset-env"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.9.2",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "mongoose": "^5.9.11",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.9.4",
+    "winston": "^3.2.1",
+    "youch": "^2.0.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.9.0",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "babel-jest": "^25.5.0",
+    "core-js": "^3.6.5",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-import-helpers": "^1.0.2",
+    "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^4.2.5",
+    "jest": "^25.4.0",
+    "nodemon": "^1.19.1",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^2.0.1",
+    "rimraf": "^3.0.2",
+    "sequelize-cli": "^5.5.0",
+    "supertest": "^4.0.2",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run style:check && npm test --watch=false && npm run build",
+      "commit-msg": "npx commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "description": "## Ambiente de desenvolvimento",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sisdevdigital/sisdigital-estrutura-back.git"
+  },
+  "keywords": [
+    "Estrutura node",
+    "javascript",
+    "node",
+    "structure node",
+    "felps03",
+    "brunass"
+  ],
+  "bugs": {
+    "url": "https://github.com/sisdevdigital/sisdigital-estrutura-back/issues"
+  },
+  "homepage": "https://github.com/sisdevdigital/sisdigital-estrutura-back#readme"
+}

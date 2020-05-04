@@ -1,0 +1,116 @@
+swagger: '2.0'
+info:
+  version: 0.0.1
+  title: Sis Digital
+
+host: localhost
+
+basePath: /
+
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+
+responses:
+  '200':
+    description: Ok.The request has succeeded
+  '201':
+    description: Created
+  '204':
+    description: No Content
+  '400':
+    description: BadRequest. The server could not understand the request due to invalid request
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  '401':
+    description: Unauthorized. The client must authenticate itself to get the requested response.
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  '403':
+    description: Forbidden. The client does not have access rights to the content
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  '404':
+    description: Not found. The server can not find requested resource
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  '405':
+    description: Method Not Allowed.
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  '422':
+    description: Unprocessable Entity
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  '500':
+    description: Internal Server Error
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  '502':
+    description: Bad Gateway
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  '504':
+    description: Gateway Timeout
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+paths:
+  /health:
+    x-swagger-router-controller: healthController
+    get:
+      tags:
+        - Health
+      description: Returns 'Status UP' if the service is ok
+      operationId: getHealthStatus
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/HealthResponse'
+
+definitions:
+  HealthResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Welcome to Sis Digital
+
+  ErrorResponse:
+    type: object
+    description: Error API responses
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: Error ID
+      message:
+        type: string
+        description: Error Description
+      description:
+        type: string
+        description: Error Details
+      errors:
+        type: array
+        description: Membership Erros
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    description: Error Entity
+    properties:
+      code:
+        type: string
+        description: Error ID
+      message:
+        type: string
+        description: Error Description
+      nativeMessage:
+        type: string
+        description: Native Error description
+      trackid:
+        type: string
+        description: (Optional) Track ID of transaction
