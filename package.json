@@ -1,16 +1,15 @@
 {
-  "name": "template-node",
-  "version": "0.0.5",
+  "name": "noql-injection",
+  "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "author": "Felps03, brunass",
+  "author": "Felps03",
   "scripts": {
     "start": "node dist/server.js",
     "test": "jest",
     "dev": "nodemon src/server.js --ignore __tests__",
     "lint": "eslint .",
     "pretty": "npx pretty-quick --staged",
-    "style:check": "npm run pretty && npm run lint:fix",
     "lint:fix": "npx eslint . --fix",
     "build": "rimraf dist && babel src -s -D -d dist --presets @babel/preset-env"
   },
@@ -53,28 +52,5 @@
     "supertest": "^4.0.2",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run style:check && npm test --watch=false && npm run build",
-      "commit-msg": "npx commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "description": "## Ambiente de desenvolvimento",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sisdevdigital/sisdigital-estrutura-back.git"
-  },
-  "keywords": [
-    "Estrutura node",
-    "javascript",
-    "node",
-    "structure node",
-    "felps03",
-    "brunass"
-  ],
-  "bugs": {
-    "url": "https://github.com/sisdevdigital/sisdigital-estrutura-back/issues"
-  },
-  "homepage": "https://github.com/sisdevdigital/sisdigital-estrutura-back#readme"
+  }
 }

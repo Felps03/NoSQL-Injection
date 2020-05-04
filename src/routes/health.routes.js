@@ -1,10 +1,10 @@
-import HealthController from './../app/controllers/HealthController'
-import logger from './../helpers/logger'
+import HealthController from '../app/controllers/HealthController';
+import logger from '../helpers/logger';
 
 module.exports = (server, routes, prefix = '/health') => {
-  logger.info('Routes - Health - OK')
+  logger.info('Routes - Health - OK');
 
-  routes.get('/', HealthController.index)
+  routes.get('/', HealthController.index);
 
-  server.use(prefix, routes)
-}
+  server.use(prefix, routes);
+};

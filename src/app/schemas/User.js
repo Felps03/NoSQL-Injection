@@ -5,20 +5,16 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true,
     unique: true,
-    lowercase: true,
-    required: [true, 'Email required']
+    lowercase: true
   },
   password: {
-    type: String,
-    required: true,
-    select: false
+    type: String
   },
   createdAt: {
     type: Date,
     default: Date.now
-  },
+  }
 });
-
 
 const User = mongoose.model('User', UserSchema);
 
