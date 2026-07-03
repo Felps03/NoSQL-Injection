@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    ports:
+      - '3333:3333'
+    environment:
+      NODE_ENV: production
+      PORT: 3333
+      MONGO_URL: mongodb://mongo:27017/nosql-injection
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
