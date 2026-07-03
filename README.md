@@ -163,6 +163,49 @@ curl -X POST http://localhost:3333/auth/safe/login \
 
 Aqui, o Zod valida o corpo da requisição antes de qualquer query no banco, exigindo que `password` seja uma `string`. Um objeto como `{"$gt": ""}` falha na validação e a API responde `400 Bad Request`, sem nunca chegar a montar a query no MongoDB.
 
+## Diagrama: vulnerável vs. seguro
+
+O diagrama abaixo compara o mesmo payload de ataque (`password: { "$gt": "" }`) passando pelas duas rotas:
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant Vulneravel as /auth/vulnerable/login
+    participant Segura as /auth/safe/login
+    participant Zod
+    participant MongoDB
+
+    Note over Cliente: Payload malicioso<br/>password: { "$gt": "" }
+
+    rect rgb(255, 230, 230)
+    Cliente->>Vulneravel: POST { email, password: {"$gt": ""} }
+    Vulneravel->>MongoDB: findOne({ email, password: {"$gt": ""} })
+    Note right of MongoDB: "$gt": "" é sempre verdadeiro,<br/>então qualquer senha "passa"
+    MongoDB-->>Vulneravel: usuário encontrado
+    Vulneravel-->>Cliente: 200 OK (autenticado sem senha real)
+    end
+
+    rect rgb(230, 255, 230)
+    Cliente->>Segura: POST { email, password: {"$gt": ""} }
+    Segura->>Zod: valida schema (password precisa ser string)
+    Zod-->>Segura: falha na validação
+    Segura-->>Cliente: 400 Bad Request (payload rejeitado)
+    Note over MongoDB: Query nunca chega a ser executada
+    end
+```
+
+Fluxograma da decisão que o Zod introduz antes da query:
+
+```mermaid
+flowchart TD
+    A[Requisição chega em /auth/safe/login] --> B{password é string?}
+    B -- Não, é objeto/operador Mongo --> C[400 Bad Request<br/>Invalid request payload]
+    B -- Sim --> D[User.findOne com email e password]
+    D --> E{Encontrou usuário?}
+    E -- Sim --> F[200 OK]
+    E -- Não --> G[400 Bad Request<br/>user/pass not found]
+```
+
 ## Como prevenir NoSQL Injection
 
 - Validar toda entrada do usuário antes de usá-la.
