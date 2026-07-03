@@ -1,5 +1,9 @@
 # NoSQL Injection POC
 
+[![CI](https://github.com/Felps03/NoSQL-Injection/actions/workflows/ci.yml/badge.svg)](https://github.com/Felps03/NoSQL-Injection/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
+[![Node.js](https://img.shields.io/badge/node-24.x-green.svg)](https://nodejs.org)
+
 ## Sobre o projeto
 
 Este projeto é uma prova de conceito (POC) educacional que demonstra, de forma prática, como uma NoSQL Injection acontece em uma API Node.js com MongoDB — e como uma validação de entrada bem feita (com [Zod](https://zod.dev/)) neutraliza o mesmo ataque.
