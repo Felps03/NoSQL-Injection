@@ -13,7 +13,6 @@
     "dev": "node --watch src/server.js",
     "test": "jest",
     "lint": "eslint .",
-    "pretty": "npx pretty-quick --staged",
     "lint:fix": "npx eslint . --fix"
   },
   "dependencies": {
@@ -21,9 +20,6 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "mongoose": "^8.24.1",
-    "pg": "^7.12.1",
-    "pg-hstore": "^2.3.3",
-    "sequelize": "^5.9.4",
     "winston": "^3.2.1",
     "youch": "^2.0.10"
   },
@@ -36,13 +32,8 @@
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-import-helpers": "^1.0.2",
     "eslint-plugin-prettier": "^3.1.0",
-    "husky": "^4.2.5",
     "jest": "^25.4.0",
     "prettier": "^1.18.2",
-    "pretty-quick": "^2.0.1",
-    "sequelize-cli": "^5.5.0",
-    "supertest": "^4.0.2",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "supertest": "^4.0.2"
   }
 }
