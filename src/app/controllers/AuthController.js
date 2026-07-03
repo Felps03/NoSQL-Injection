@@ -1,6 +1,6 @@
-import httpCodes from '../../helpers/enums/httpCodes';
-import logger from '../../helpers/logger';
-import User from '../schemas/User';
+import httpCodes from '../../helpers/enums/httpCodes.js';
+import logger from '../../helpers/logger.js';
+import User from '../schemas/User.js';
 
 const isObject = params => {
   return new Promise((resolve, reject) => {

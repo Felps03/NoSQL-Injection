@@ -10,4 +10,4 @@ const errorStatus = {
   SERVICE_UNAVAILABLE: 503
 };
 
-module.exports = Object.freeze(errorStatus);
+export default Object.freeze(errorStatus);

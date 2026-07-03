@@ -1,7 +1,7 @@
-import AuthController from '../app/controllers/AuthController';
-import logger from '../helpers/logger';
+import AuthController from '../app/controllers/AuthController.js';
+import logger from '../helpers/logger.js';
 
-module.exports = (server, routes, prefix = '/auth') => {
+export default (server, routes, prefix = '/auth') => {
   logger.info('Routes - Auth - OK');
 
   routes.get('/', AuthController.index);

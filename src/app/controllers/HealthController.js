@@ -1,5 +1,5 @@
-import httpCodes from '../../helpers/enums/httpCodes';
-import logger from '../../helpers/logger';
+import httpCodes from '../../helpers/enums/httpCodes.js';
+import logger from '../../helpers/logger.js';
 
 class HealthController {
   async index(req, res) {

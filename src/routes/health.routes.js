@@ -1,7 +1,7 @@
-import HealthController from '../app/controllers/HealthController';
-import logger from '../helpers/logger';
+import HealthController from '../app/controllers/HealthController.js';
+import logger from '../helpers/logger.js';
 
-module.exports = (server, routes, prefix = '/health') => {
+export default (server, routes, prefix = '/health') => {
   logger.info('Routes - Health - OK');
 
   routes.get('/', HealthController.index);

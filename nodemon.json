@@ -1,6 +1,0 @@
-{
-  "execMap": {
-    "js": "babel-node"
-  },
-  "ignore": ["__tests__"]
-}

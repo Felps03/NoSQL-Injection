@@ -1,7 +1,7 @@
 import cluster from 'cluster';
 import os from 'os';
 
-import app from './app';
+import app from './app.js';
 
 if (cluster.isMaster) {
   for (let index = 0; index < os.cpus().length; index++) {

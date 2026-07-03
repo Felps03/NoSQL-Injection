@@ -39,4 +39,4 @@ const logger = new winston.createLogger({
   transports: configLog.transports
 });
 
-module.exports = logger;
+export default logger;
