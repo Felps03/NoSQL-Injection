@@ -38,7 +38,6 @@
     "eslint-plugin-prettier": "^3.1.0",
     "husky": "^4.2.5",
     "jest": "^25.4.0",
-    "nodemon": "^1.19.1",
     "prettier": "^1.18.2",
     "pretty-quick": "^2.0.1",
     "sequelize-cli": "^5.5.0",
