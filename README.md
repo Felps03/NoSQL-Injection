@@ -232,11 +232,15 @@ flowchart TD
 - Dockerfile atualizado para Node 24 e build sem Babel.
 - Docker Compose adicionado, com serviço de MongoDB incluso.
 - README reescrito para refletir o estado atual do projeto.
+- CI adicionado via GitHub Actions (lint, format check e testes em cada push/PR).
 
 ## Estrutura de pastas
 
 ```
 .
+├── .github
+│   └── workflows
+│       └── ci.yml            # Pipeline de CI (lint, format check e testes)
 ├── src
 │   ├── app
 │   │   ├── controllers      # Regras de cada rota (Health, Users, Auth)
@@ -258,6 +262,15 @@ flowchart TD
 └── .env.example
 ```
 
+## CI
+
+O workflow em `.github/workflows/ci.yml` roda em todo push para `master` e em pull requests, executando:
+
+1. `npm ci`
+2. `npm run lint`
+3. `npm run format:check`
+4. `npm test`
+
 ## Próximos passos
 
 Sugestões de evolução, fora do escopo desta POC:
@@ -267,5 +280,4 @@ Sugestões de evolução, fora do escopo desta POC:
 - Adicionar rate limit nas rotas de login.
 - Melhorar o tratamento de erros (respostas mais específicas por tipo de falha).
 - Publicar a documentação HTML do Swagger.
-- Adicionar CI (lint, testes e build automatizados).
 - Melhorar a cobertura de testes nos blocos de erro (`catch`) dos controllers.
