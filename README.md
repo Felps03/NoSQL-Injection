@@ -5,40 +5,54 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
 [![Node.js](https://img.shields.io/badge/node-24.x-green.svg)](https://nodejs.org)
 
+> 🛡️ Veja uma NoSQL Injection acontecer ao vivo — e como uma linha de validação a neutraliza.
+
+Duas rotas de login idênticas. Mande o mesmo payload malicioso para as duas: uma te deixa entrar sem senha, a outra te barra com `400 Bad Request`. É a mesma vulnerabilidade que já derrubou sistemas de produção por aí — rodando local, sob seu controle, pronta pra você estudar, quebrar e entender de verdade.
+
+## ✨ Destaques
+
+- 🎯 **Ataque real, ao vivo** — mesma rota, mesmo payload: uma autentica sem senha, a outra bloqueia.
+- ⚡ **Stack moderna** — Node 24, Express 5, Mongoose 8, 100% ESM, zero Babel.
+- 🛡️ **Mitigação de verdade** — validação de schema com [Zod](https://zod.dev/), não um "sanitize" genérico de blog.
+- 🧪 **Testado de verdade** — testes de integração com `mongodb-memory-server` e cobertura acima de 90%.
+- 🐳 **Sobe com um comando** — `docker compose up --build` e a API já está no ar, conectada ao MongoDB.
+- 📄 **Documentado a fundo** — OpenAPI, collection Postman e diagramas Mermaid do fluxo de ataque passo a passo.
+
 ## Índice
 
+- [Destaques](#-destaques)
 - [Sobre o projeto](#sobre-o-projeto)
-- [Aviso de segurança](#aviso-de-segurança)
-- [Stack](#stack)
+- [Aviso de segurança](#-aviso-de-segurança)
+- [Stack](#-stack)
 - [Requisitos](#requisitos)
 - [Instalação local](#instalação-local)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
-- [Rodando localmente](#rodando-localmente)
-- [Rodando com Docker](#rodando-com-docker)
-- [Rodando os testes](#rodando-os-testes)
+- [Rodando localmente](#-rodando-localmente)
+- [Rodando com Docker](#-rodando-com-docker)
+- [Rodando os testes](#-rodando-os-testes)
 - [Scripts disponíveis](#scripts-disponíveis)
 - [Rotas da API](#rotas-da-api)
 - [Exemplo: criar usuário](#exemplo-criar-usuário)
-- [Exemplo: login vulnerável](#exemplo-login-vulnerável)
-- [Exemplo: login seguro](#exemplo-login-seguro)
-- [Diagrama: vulnerável vs. seguro](#diagrama-vulnerável-vs-seguro)
-- [Como prevenir NoSQL Injection](#como-prevenir-nosql-injection)
-- [Decisões de modernização](#decisões-de-modernização)
-- [Estrutura de pastas](#estrutura-de-pastas)
-- [CI](#ci)
-- [Próximos passos](#próximos-passos)
+- [Exemplo: login vulnerável](#-exemplo-login-vulnerável)
+- [Exemplo: login seguro](#-exemplo-login-seguro)
+- [Diagrama: vulnerável vs. seguro](#-diagrama-vulnerável-vs-seguro)
+- [Como prevenir NoSQL Injection](#-como-prevenir-nosql-injection)
+- [Decisões de modernização](#-decisões-de-modernização)
+- [Estrutura de pastas](#-estrutura-de-pastas)
+- [CI](#-ci)
+- [Próximos passos](#-próximos-passos)
 
 ## Sobre o projeto
 
 Este projeto é uma prova de conceito (POC) educacional que demonstra, de forma prática, como uma NoSQL Injection acontece em uma API Node.js com MongoDB — e como uma validação de entrada bem feita (com [Zod](https://zod.dev/)) neutraliza o mesmo ataque.
 
-A API expõe duas rotas de login equivalentes: uma vulnerável de propósito e uma segura, para comparação lado a lado.
+A API expõe duas rotas de login equivalentes: uma vulnerável de propósito e uma segura, para comparação lado a lado. Não é um artigo teórico sobre segurança — é a vulnerabilidade rodando, sendo explorada e sendo corrigida, em código real que você clona e testa em minutos.
 
-## Aviso de segurança
+## ⚠️ Aviso de segurança
 
 Este projeto existe **apenas para fins de estudo e conscientização defensiva**, para ser rodado em ambiente local/controlado (sua máquina, um container Docker isolado). Ele não deve ser exposto publicamente, usado contra sistemas de terceiros, nem tratado como ferramenta ofensiva. O objetivo é entender a vulnerabilidade para saber preveni-la, não explorá-la fora deste ambiente de estudo.
 
-## Stack
+## 🧰 Stack
 
 - Node.js 24
 - Express 5
@@ -83,7 +97,7 @@ Copie o arquivo para `.env` e ajuste conforme necessário:
 cp .env.example .env
 ```
 
-## Rodando localmente
+## 🚀 Rodando localmente
 
 Com um MongoDB disponível em `localhost:27017`:
 
@@ -97,7 +111,7 @@ Ou, usando um arquivo `.env` já configurado:
 npm run dev
 ```
 
-## Rodando com Docker
+## 🐳 Rodando com Docker
 
 ```bash
 docker compose up --build
@@ -115,7 +129,7 @@ Para encerrar:
 docker compose down
 ```
 
-## Rodando os testes
+## 🧪 Rodando os testes
 
 ```bash
 npm test
@@ -153,7 +167,7 @@ curl -X POST http://localhost:3333/users \
   -d '{"email":"teste@example.com","password":"123456"}'
 ```
 
-## Exemplo: login vulnerável
+## 🔓 Exemplo: login vulnerável
 
 Login normal, com senha correta:
 
@@ -173,7 +187,7 @@ curl -X POST http://localhost:3333/auth/vulnerable/login \
 
 Essa rota autentica o usuário mesmo sem saber a senha real. Isso acontece porque `req.body` é passado direto para a query do Mongoose (`User.findOne({ email, password })`), sem validar o tipo do campo `password`. A rota é vulnerável **de propósito**, para fins de demonstração.
 
-## Exemplo: login seguro
+## 🔒 Exemplo: login seguro
 
 Login normal, com senha correta:
 
@@ -193,7 +207,7 @@ curl -X POST http://localhost:3333/auth/safe/login \
 
 Aqui, o Zod valida o corpo da requisição antes de qualquer query no banco, exigindo que `password` seja uma `string`. Um objeto como `{"$gt": ""}` falha na validação e a API responde `400 Bad Request`, sem nunca chegar a montar a query no MongoDB.
 
-## Diagrama: vulnerável vs. seguro
+## 🧭 Diagrama: vulnerável vs. seguro
 
 O diagrama abaixo compara o mesmo payload de ataque (`password: { "$gt": "" }`) passando pelas duas rotas:
 
@@ -236,7 +250,7 @@ flowchart TD
     E -- Não --> G[400 Bad Request<br/>user/pass not found]
 ```
 
-## Como prevenir NoSQL Injection
+## 🛡️ Como prevenir NoSQL Injection
 
 - Validar toda entrada do usuário antes de usá-la.
 - Rejeitar objetos onde se espera um tipo primitivo (string, number etc.).
@@ -247,7 +261,7 @@ flowchart TD
 - Em projetos reais, usar autenticação de verdade (tokens, sessões, OAuth etc.).
 - Em projetos reais, sempre hashear senhas (bcrypt, argon2 etc.) — nunca armazená-las em texto puro.
 
-## Decisões de modernização
+## 🔧 Decisões de modernização
 
 - Node 10 → Node 24.
 - Babel removido — o projeto roda ESM nativo, sem transpilação.
@@ -264,7 +278,7 @@ flowchart TD
 - README reescrito para refletir o estado atual do projeto.
 - CI adicionado via GitHub Actions (lint, format check e testes em cada push/PR).
 
-## Estrutura de pastas
+## 📁 Estrutura de pastas
 
 ```
 .
@@ -292,7 +306,7 @@ flowchart TD
 └── .env.example
 ```
 
-## CI
+## ⚙️ CI
 
 O workflow em `.github/workflows/ci.yml` roda em todo push para `master` e em pull requests, executando:
 
@@ -301,7 +315,7 @@ O workflow em `.github/workflows/ci.yml` roda em todo push para `master` e em pu
 3. `npm run format:check`
 4. `npm test`
 
-## Próximos passos
+## 🗺️ Próximos passos
 
 Sugestões de evolução, fora do escopo desta POC:
 
@@ -311,3 +325,7 @@ Sugestões de evolução, fora do escopo desta POC:
 - Melhorar o tratamento de erros (respostas mais específicas por tipo de falha).
 - Publicar a documentação HTML do Swagger.
 - Melhorar a cobertura de testes nos blocos de erro (`catch`) dos controllers.
+
+---
+
+Feito por [Felps03](https://github.com/Felps03). Se este projeto te ajudou a entender NoSQL Injection, deixe uma ⭐ no repositório.
