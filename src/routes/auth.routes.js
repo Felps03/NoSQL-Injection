@@ -4,10 +4,8 @@ import logger from '../helpers/logger.js';
 export default (server, routes, prefix = '/auth') => {
   logger.info('Routes - Auth - OK');
 
-  routes.get('/', AuthController.index);
-  routes.post('/create', AuthController.create);
-  routes.post('/login', AuthController.login);
-  routes.post('/loginSecurity', AuthController.loginSecurity);
+  routes.post('/vulnerable/login', AuthController.vulnerableLogin);
+  routes.post('/safe/login', AuthController.safeLogin);
 
   server.use(prefix, routes);
 };

@@ -1,38 +1,20 @@
+import { z } from 'zod';
+
 import httpCodes from '../../helpers/enums/httpCodes.js';
 import logger from '../../helpers/logger.js';
 import User from '../schemas/User.js';
 
-const isObject = params => {
-  return new Promise((resolve, reject) => {
-    Object.keys(params).forEach(v => {
-      if (typeof params[v] === 'object') return reject(false);
-    });
-    resolve(true);
-  });
-};
+const loginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(1)
+});
 
 class AuthController {
-  async index(req, res) {
-    logger.info('AuthController - Index - OK');
-
-    const user = await User.find({});
-
-    return res.status(httpCodes.OK).send(user);
-  }
-
-  async create(req, res) {
-    logger.info('AuthController - Create - OK');
-    try {
-      const user = await User.create(req.body);
-
-      return res.status(httpCodes.OK).send(user);
-    } catch (error) {
-      return res.status(httpCodes.BAD_REQUEST).send({ result: 'user/pass not create' });
-    }
-  }
-
-  async login(req, res) {
-    logger.info('AuthController - Auth - OK');
+  // Vulnerable on purpose: email/password go straight from req.body into the Mongo
+  // query, so an attacker can send an operator (e.g. { "$gt": "" }) instead of a
+  // real password and bypass the check. Local/controlled demo only.
+  async vulnerableLogin(req, res) {
+    logger.info('AuthController - Vulnerable Login - OK');
     try {
       const { email, password } = req.body;
 
@@ -44,12 +26,22 @@ class AuthController {
     }
   }
 
-  async loginSecurity(req, res) {
-    logger.info('AuthController - Auth - OK');
+  // Mitigation: Zod rejects the request before email/password ever reach the
+  // Mongo query, so an operator payload fails validation instead of being executed.
+  async safeLogin(req, res) {
+    logger.info('AuthController - Safe Login - OK');
+
+    const parsed = loginSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(httpCodes.BAD_REQUEST).json({
+        error: 'Invalid request payload',
+        details: parsed.error.issues
+      });
+    }
 
     try {
-      const { email, password } = req.body;
-      await isObject({ email, password });
+      const { email, password } = parsed.data;
 
       const user = await User.findOne({ email, password });
 
