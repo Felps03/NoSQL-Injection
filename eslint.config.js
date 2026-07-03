@@ -3,18 +3,20 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
   {
-    // commitlint.config.js still uses CommonJS (module.exports) and is not valid under
-    // "type": "module" as-is; excluded here rather than fixed, since it's outside this
-    // checkpoint's scope and was never actually wired into a git hook (no Husky).
-    ignores: [
-      'node_modules/**',
-      'coverage/**',
-      '__tests__/coverage/**',
-      'package-lock.json',
-      'commitlint.config.js'
-    ]
+    ignores: ['node_modules/**', 'coverage/**', '__tests__/coverage/**', 'package-lock.json']
   },
   js.configs.recommended,
+  {
+    // commitlint.config.cjs is CommonJS on purpose (see file comment for why).
+    files: ['commitlint.config.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: {
+        module: 'writable',
+        require: 'readonly'
+      }
+    }
+  },
   {
     languageOptions: {
       ecmaVersion: 'latest',

@@ -1,3 +1,5 @@
+// .cjs on purpose: the project is "type": "module", but commitlint's own config
+// loader expects a CommonJS module here.
 module.exports = {
   parserPreset: 'conventional-changelog-conventionalcommits',
   rules: {
