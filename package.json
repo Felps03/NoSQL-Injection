@@ -4,6 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "author": "Felps03",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "start": "node dist/server.js",
     "test": "jest",
