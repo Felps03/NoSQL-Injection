@@ -1,8 +1,32 @@
 # NoSQL Injection POC
 
 [![CI](https://github.com/Felps03/NoSQL-Injection/actions/workflows/ci.yml/badge.svg)](https://github.com/Felps03/NoSQL-Injection/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen.svg)](#rodando-os-testes)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
 [![Node.js](https://img.shields.io/badge/node-24.x-green.svg)](https://nodejs.org)
+
+## Índice
+
+- [Sobre o projeto](#sobre-o-projeto)
+- [Aviso de segurança](#aviso-de-segurança)
+- [Stack](#stack)
+- [Requisitos](#requisitos)
+- [Instalação local](#instalação-local)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Rodando localmente](#rodando-localmente)
+- [Rodando com Docker](#rodando-com-docker)
+- [Rodando os testes](#rodando-os-testes)
+- [Scripts disponíveis](#scripts-disponíveis)
+- [Rotas da API](#rotas-da-api)
+- [Exemplo: criar usuário](#exemplo-criar-usuário)
+- [Exemplo: login vulnerável](#exemplo-login-vulnerável)
+- [Exemplo: login seguro](#exemplo-login-seguro)
+- [Diagrama: vulnerável vs. seguro](#diagrama-vulnerável-vs-seguro)
+- [Como prevenir NoSQL Injection](#como-prevenir-nosql-injection)
+- [Decisões de modernização](#decisões-de-modernização)
+- [Estrutura de pastas](#estrutura-de-pastas)
+- [CI](#ci)
+- [Próximos passos](#próximos-passos)
 
 ## Sobre o projeto
 
@@ -98,6 +122,8 @@ npm test
 ```
 
 Os testes de integração usam [mongodb-memory-server](https://github.com/typegoose/mongodb-memory-server), que sobe um MongoDB in-memory automaticamente. Não é preciso ter um MongoDB real rodando para testar.
+
+O `npm test` também gera um relatório de cobertura no terminal (e em `__tests__/coverage`). O badge de cobertura no topo do README é um retrato manual do último número — atualize-o se a cobertura mudar de forma relevante.
 
 ## Scripts disponíveis
 
