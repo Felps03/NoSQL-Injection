@@ -3,7 +3,13 @@ export default {
   clearMocks: true,
 
   collectCoverage: true,
-  collectCoverageFrom: ['src/**', '!src/helpers/**', '!src/app.js', '!src/server.js', '!src/database/**'],
+  collectCoverageFrom: [
+    'src/**',
+    '!src/helpers/**',
+    '!src/app.js',
+    '!src/server.js',
+    '!src/database/**'
+  ],
   coverageDirectory: '__tests__/coverage',
   coverageReporters: ['text', 'lcov'],
 

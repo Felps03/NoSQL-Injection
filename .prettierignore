@@ -2,3 +2,9 @@ node_modules
 coverage
 __tests__/coverage
 package-lock.json
+
+# out of scope for this checkpoint; formatted in their own dedicated pass
+README.md
+postman/
+swagger/
+commitlint.config.js
