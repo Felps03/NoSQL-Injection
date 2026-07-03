@@ -87,7 +87,7 @@ PORT=3333
 MONGO_URL=mongodb://localhost:27017/nosql-injection
 ```
 
-- `NODE_ENV`: controla o modo de execução (em `development`, erros não tratados retornam stack trace detalhado via Youch).
+- `NODE_ENV`: controla o modo de execução (em `development`, erros não tratados retornam a stack trace no corpo da resposta).
 - `PORT`: porta HTTP em que o servidor escuta.
 - `MONGO_URL`: string de conexão do MongoDB. É obrigatória — a aplicação falha ao subir se ela não estiver definida.
 

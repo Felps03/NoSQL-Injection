@@ -1,8 +1,10 @@
-import 'dotenv/config';
+import { config } from 'dotenv';
 import express from 'express';
-import Youch from 'youch';
 
+import logger from './helpers/logger.js';
 import routes from './routes/index.routes.js';
+
+config({ quiet: true });
 
 class App {
   constructor() {
@@ -22,11 +24,11 @@ class App {
   }
 
   exceptionHandler() {
-    this.server.use(async (err, req, res, next) => {
-      if (process.env.NODE_ENV === 'development') {
-        const errors = await new Youch(err, req).toJSON();
+    this.server.use((err, req, res, next) => {
+      logger.error(err.stack);
 
-        return res.status(500).json(errors);
+      if (process.env.NODE_ENV === 'development') {
+        return res.status(500).json({ error: err.message, stack: err.stack });
       }
 
       return res.status(500).json({ error: 'Internal server error' });
