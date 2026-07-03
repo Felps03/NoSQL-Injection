@@ -20,7 +20,7 @@
   "dependencies": {
     "dotenv": "^8.0.0",
     "express": "^5.2.1",
-    "mongoose": "^8.24.1",
+    "mongoose": "^9.7.3",
     "winston": "^3.2.1",
     "youch": "^2.0.10",
     "zod": "^4.4.3"
