@@ -1,116 +1,279 @@
-swagger: '2.0'
+openapi: 3.0.3
 info:
-  version: 0.0.1
-  title: Sis Digital
+  title: NoSQL Injection POC
+  version: 1.0.0
+  description: >
+    API educacional para demonstrar NoSQL Injection em MongoDB e sua mitigação com
+    validação de schema (Zod). Uso recomendado apenas em ambiente local/controlado,
+    para estudo e conscientização defensiva.
 
-host: localhost
+servers:
+  - url: http://localhost:3333
+    description: Ambiente local
 
-basePath: /
+tags:
+  - name: Health
+    description: Verificação de disponibilidade da API
+  - name: Users
+    description: Cadastro e listagem de usuários
+  - name: Auth
+    description: Rotas de login, vulnerável e segura, para fins comparativos
 
-schemes:
-  - http
-consumes:
-  - application/json
-produces:
-  - application/json
-
-responses:
-  '200':
-    description: Ok.The request has succeeded
-  '201':
-    description: Created
-  '204':
-    description: No Content
-  '400':
-    description: BadRequest. The server could not understand the request due to invalid request
-    schema:
-      $ref: '#/definitions/ErrorResponse'
-  '401':
-    description: Unauthorized. The client must authenticate itself to get the requested response.
-    schema:
-      $ref: '#/definitions/ErrorResponse'
-  '403':
-    description: Forbidden. The client does not have access rights to the content
-    schema:
-      $ref: '#/definitions/ErrorResponse'
-  '404':
-    description: Not found. The server can not find requested resource
-    schema:
-      $ref: '#/definitions/ErrorResponse'
-  '405':
-    description: Method Not Allowed.
-    schema:
-      $ref: '#/definitions/ErrorResponse'
-  '422':
-    description: Unprocessable Entity
-    schema:
-      $ref: '#/definitions/ErrorResponse'
-  '500':
-    description: Internal Server Error
-    schema:
-      $ref: '#/definitions/ErrorResponse'
-  '502':
-    description: Bad Gateway
-    schema:
-      $ref: '#/definitions/ErrorResponse'
-  '504':
-    description: Gateway Timeout
-    schema:
-      $ref: '#/definitions/ErrorResponse'
 paths:
   /health:
-    x-swagger-router-controller: healthController
     get:
       tags:
         - Health
-      description: Returns 'Status UP' if the service is ok
+      summary: Verifica se a API está no ar
       operationId: getHealthStatus
       responses:
         '200':
-          description: Success
-          schema:
-            $ref: '#/definitions/HealthResponse'
+          description: API disponível
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                message: Welcome to Sis Digital
 
-definitions:
-  HealthResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: Welcome to Sis Digital
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Lista os usuários cadastrados
+      operationId: listUsers
+      responses:
+        '200':
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - Users
+      summary: Cria um usuário
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+            example:
+              email: teste@example.com
+              password: '123456'
+      responses:
+        '200':
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Não foi possível criar o usuário (ex. e-mail já cadastrado)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                result: user/pass not create
 
-  ErrorResponse:
-    type: object
-    description: Error API responses
-    properties:
-      code:
-        type: integer
-        format: int32
-        description: Error ID
-      message:
-        type: string
-        description: Error Description
-      description:
-        type: string
-        description: Error Details
-      errors:
-        type: array
-        description: Membership Erros
-        items:
-          $ref: '#/definitions/Error'
-  Error:
-    type: object
-    description: Error Entity
-    properties:
-      code:
-        type: string
-        description: Error ID
-      message:
-        type: string
-        description: Error Description
-      nativeMessage:
-        type: string
-        description: Native Error description
-      trackid:
-        type: string
-        description: (Optional) Track ID of transaction
+  /auth/vulnerable/login:
+    post:
+      tags:
+        - Auth
+      summary: Login vulnerável a NoSQL Injection (uso apenas demonstrativo local/controlado)
+      description: >
+        **Rota intencionalmente vulnerável.** `email` e `password` são passados
+        diretamente do corpo da requisição para a query do MongoDB
+        (`User.findOne({ email, password })`), sem validar o tipo de `password`.
+        Isso permite que um operador do MongoDB (ex. `{ "$gt": "" }`) seja enviado
+        no lugar de uma senha real, autenticando sem conhecer a senha.
+        Existe apenas para fins educacionais, em ambiente local/controlado — não
+        deve ser usada como referência de implementação nem exposta publicamente.
+      operationId: vulnerableLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VulnerableLoginInput'
+            examples:
+              normal:
+                summary: Login normal, com senha correta
+                value:
+                  email: teste@example.com
+                  password: '123456'
+              noSqlInjection:
+                summary: Payload de NoSQL Injection (bypass de senha)
+                value:
+                  email: teste@example.com
+                  password:
+                    $gt: ''
+      responses:
+        '200':
+          description: >
+            Autenticado com sucesso — inclusive quando o payload de injeção é usado,
+            já que a rota não valida o tipo de `password`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Usuário ou senha não encontrados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                result: user/pass not found
+
+  /auth/safe/login:
+    post:
+      tags:
+        - Auth
+      summary: Login protegido com validação via Zod
+      description: >
+        Equivalente seguro da rota `/auth/vulnerable/login`. O corpo da requisição
+        é validado por um schema Zod que exige `email` como e-mail válido e
+        `password` como string não vazia, antes de qualquer consulta ao MongoDB.
+        Um payload de NoSQL Injection (ex. `{ "$gt": "" }` no lugar da senha) é
+        rejeitado na validação, com `400 Bad Request`, e nunca chega à query.
+      operationId: safeLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SafeLoginInput'
+            examples:
+              normal:
+                summary: Login normal, com senha correta
+                value:
+                  email: teste@example.com
+                  password: '123456'
+              noSqlInjectionBlocked:
+                summary: Payload de NoSQL Injection bloqueado pela validação
+                value:
+                  email: teste@example.com
+                  password:
+                    $gt: ''
+      responses:
+        '200':
+          description: Autenticado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Payload inválido (falha na validação Zod) ou credenciais não encontradas
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidPayload:
+                  summary: password não é uma string (payload de injeção)
+                  value:
+                    error: Invalid request payload
+                    details:
+                      - path: ['password']
+                        message: Invalid input
+                credentialsNotFound:
+                  summary: Usuário ou senha não encontrados
+                  value:
+                    result: user/pass not found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6683f1f2c2a4b8a1d4e5f6a7
+        email:
+          type: string
+          format: email
+          example: teste@example.com
+        password:
+          type: string
+          example: '123456'
+        createdAt:
+          type: string
+          format: date-time
+
+    UserInput:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: teste@example.com
+        password:
+          type: string
+          example: '123456'
+
+    VulnerableLoginInput:
+      type: object
+      description: >
+        Sem validação de tipo — password aceita tanto string quanto objeto
+        (o que possibilita a injeção).
+      properties:
+        email:
+          type: string
+          example: teste@example.com
+        password:
+          description: Senha real (string) ou payload de NoSQL Injection (objeto)
+          oneOf:
+            - type: string
+            - type: object
+          example: '123456'
+
+    SafeLoginInput:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: teste@example.com
+        password:
+          type: string
+          minLength: 1
+          example: '123456'
+
+    HealthResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Welcome to Sis Digital
+
+    ErrorResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: user/pass not found
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid request payload
+        details:
+          type: array
+          items:
+            type: object
