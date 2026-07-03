@@ -5,8 +5,6 @@ import Youch from 'youch';
 
 import routes from './routes/index.routes.js';
 
-import './database/index.js';
-
 class App {
   constructor() {
     this.server = express();

@@ -1,18 +1,15 @@
 import mongoose from 'mongoose';
 
-class Database {
-  constructor() {
-    this.init();
+import logger from '../helpers/logger.js';
+
+export async function connectDatabase() {
+  const { MONGO_URL } = process.env;
+
+  if (!MONGO_URL) {
+    throw new Error('Missing required environment variable: MONGO_URL');
   }
 
-  init() {
-    this.mongoConnection = mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useFindAndModify: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true
-    });
-  }
+  await mongoose.connect(MONGO_URL);
+
+  logger.info('MongoDB connected');
 }
-
-export default new Database();
