@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --runInBand",
     "lint": "eslint .",
     "lint:fix": "npx eslint . --fix"
   },
@@ -32,8 +32,9 @@
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-import-helpers": "^1.0.2",
     "eslint-plugin-prettier": "^3.1.0",
-    "jest": "^25.4.0",
+    "jest": "^30.4.2",
+    "mongodb-memory-server": "^11.2.0",
     "prettier": "^1.18.2",
-    "supertest": "^4.0.2"
+    "supertest": "^7.2.2"
   }
 }
