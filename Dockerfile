@@ -1,5 +1,5 @@
 # seleciona a imagem base
-FROM node:24-slim
+FROM node:25-slim
 
 LABEL MAINTAINER="Felipe Santos - @felps03"
 
